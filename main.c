@@ -22,6 +22,8 @@ int main()
     int wardID[PATIENTS];
     int daysAdmitted[PATIENTS];
 
+    double finalAmounts[PATIENTS];
+
     int totalPatients = 0;
     double TotalRevenue = 0.0;
     double TotalDiscounts = 0.0;
@@ -42,16 +44,31 @@ int main()
 
         switch (choice) {
 
-        case 1 :
-
+        case 1 :{
+            int startIdx =totalPatients;
 
             totalPatients = addingPatients(patientName, age, triageLevel, specialtyID, isAdmitted, wardID, daysAdmitted, totalPatients);
 
+            for (int i = startIdx; i < totalPatients; i++) {
+
+                    double gross = 0;
+                    double disc = 0;
+                    double finalAmt = 0;
+
+                 calculateAndPrintBill(patientName[i], age[i], triageLevel[i], specialtyID[i], isAdmitted[i], wardID[i], daysAdmitted[i], &gross, &disc, &finalAmt);
+
+                    TotalRevenue += finalAmt;
+                    TotalDiscounts += disc;
+                    finalAmounts[i] = finalAmt;
+                }
+                break;
+        }
         }
     } while (choice != 5);
 
     return 0;
 }
+
 
 int addingPatients(char patientName[][50], int age[], int triageLevel[], int specialtyID[], int isAdmitted[], int wardID[], int daysAdmitted[], int totalPatients ){
     int idx = totalPatients;
@@ -92,7 +109,59 @@ int addingPatients(char patientName[][50], int age[], int triageLevel[], int spe
 
     return idx;
 }
+void calculateAndPrintBill(char name[], int age, int triageLevel, int specialtyID, int isAdmitted, int wardID, int daysAdmitted, double *gross, double *disc, double *final) {
 
+    double waitTime = AVG_TIME[specialtyID];
+    double baseFee = BASE_FEES[specialtyID];
+    double surcharge = 0.0;
+
+    if (triageLevel == 2) {
+
+        surcharge = baseFee * 0.20;
+
+    } else if (triageLevel == 3) {
+
+        surcharge = baseFee * 0.50;
+    }
+
+    double wardCost = 0.0;
+    if (isAdmitted == 1 && wardID >= 1 && wardID <= 4) {
+
+        wardCost = daysAdmitted * WARD_DAILY_RATES[wardID];
+
+    }
+
+    double SubTotal = baseFee + surcharge + wardCost;
+
+    double discount = 0.0;
+    if (age < 5 || age > 65) {
+        discount = SubTotal * 0.15;
+    }
+
+    double finalBill = SubTotal - discount;
+
+    *gross = SubTotal;
+    *disc = discount;
+    *final = finalBill;
+
+    printf("\n=========================================\n");
+    printf("     SMART HOSPITAL ADMISSION & BILL     \n");
+    printf("=========================================\n");
+    printf("Patient Name           : %s\n", name);
+    printf("Age                    : %d Years %s\n", age, (age < 5 || age > 65) ? "(15%% Subsidy Eligible)" : "");
+    printf("Specialty              : %s\n", SPECIALTY_NAMES[specialtyID]);
+    printf("Assigned Ward          : %s\n", isAdmitted ? WARD_NAMES[wardID] : "None (Outpatient)");
+    printf("Urgency Level          : Level %d (%s)\n", triageLevel, triageLevel == 3 ? "Critical" : (triageLevel == 2 ? "Urgent" : "Normal"));
+    printf("Base Consultation Fee  : LKR %.2f\n", baseFee);
+    printf("Emergency Surcharge    : LKR %.2f\n", surcharge);
+    printf("Ward Stay Cost         : LKR %.2f\n", wardCost);
+    printf("Gross Total Bill       : LKR %.2f\n", SubTotal);
+    printf("Age Subsidy Discount   : LKR -%.2f\n", discount);
+    printf("Final Payable Amount   : LKR %.2f\n", finalBill);
+    printf("Estimated Waiting Time : %.2f mins\n", waitTime);
+    printf("=========================================\n");
+
+}
 
 
 
