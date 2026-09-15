@@ -22,7 +22,7 @@ int main()
     int wardID[PATIENTS];
     int daysAdmitted[PATIENTS];
 
-    double totalAmount[PATIENTS];
+    int totalPatients = 0;
     double TotalRevenue = 0.0;
     double TotalDiscounts = 0.0;
 
@@ -42,9 +42,57 @@ int main()
 
         switch (choice) {
 
+        case 1 :
+
+
+            totalPatients = addingPatients(patientName, age, triageLevel, specialtyID, isAdmitted, wardID, daysAdmitted, totalPatients);
 
         }
     } while (choice != 5);
 
     return 0;
 }
+
+int addingPatients(char patientName[][50], int age[], int triageLevel[], int specialtyID[], int isAdmitted[], int wardID[], int daysAdmitted[], int totalPatients ){
+    int idx = totalPatients;
+    char nextChoice;
+    do {
+        printf("\n--- Patient Registration (ID: PAT-%d) ---\n", 1001 + idx);
+        printf("Enter Patient Name: ");
+        scanf(" %[^\n]s", patientName[idx]);
+
+        printf("Enter Patient Age: ");
+        scanf("%d", &age[idx]);
+
+        printf("Enter Triage Level (1 = Normal, 2 = Urgent, 3 = Critical): ");
+        scanf("%d", &triageLevel[idx]);
+
+        printf("Enter Specialty ID (1 = OPD, 2 = Paediatrics, 3 = Cardiology, 4 = Neurology): ");
+        scanf("%d", &specialtyID[idx]);
+
+        printf("Is Admitted to Ward? (1 = Yes, 0 = No): ");
+        scanf("%d", &isAdmitted[idx]);
+
+        if (isAdmitted[idx] == 1) {
+            printf("Enter Ward ID (1 = General, 2 = Paediatric, 3 = Surgical, 4 = ICU): ");
+            scanf("%d", &wardID[idx]);
+            printf("Enter Days Admitted: ");
+            scanf("%d", &daysAdmitted[idx]);
+        } else {
+            wardID[idx] = 0;
+            daysAdmitted[idx] = 0;
+        }
+
+        idx++;
+
+        printf("Add another patient? (Y/N): ");
+        scanf(" %c", &nextChoice);
+
+    } while (nextChoice == 'Y' || nextChoice == 'y');
+
+    return idx;
+}
+
+
+
+
