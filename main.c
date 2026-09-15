@@ -71,7 +71,14 @@ int main()
                     sortByPriority(patientName, age, triageLevel, totalPatients);
                 }
                 break;
-        }
+        case 5:
+
+                printf("\n  Exiting Smart Hospital System. Goodbye!\n");
+               break;
+            default:
+                printf("\n  Invalid choice! Please select an option between 1 and 5.\n");
+         }
+
     } while (choice != 5);
 
     return 0;
