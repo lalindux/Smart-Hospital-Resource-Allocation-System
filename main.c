@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define PATIENTS 1000
 #define SPECIALTIES 4
@@ -63,6 +64,13 @@ int main()
                 }
                 break;
         }
+        case 2:
+            if (totalPatients == 0) {
+                    printf("\n  No patients registered yet!\n");
+                } else {
+                    sortByPriority(patientName, age, triageLevel, totalPatients);
+                }
+                break;
         }
     } while (choice != 5);
 
@@ -163,5 +171,46 @@ void calculateAndPrintBill(char name[], int age, int triageLevel, int specialtyI
 
 }
 
+void sortByPriority(char name[][50], int age[], int triageLevel[], int count) {
+    char tempName[50];
+    int tempAge, tempTriage;
 
 
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = 0; j < count - i - 1; j++) {
+            if (triageLevel[j] < triageLevel[j + 1]) {
+
+
+                tempTriage = triageLevel[j];
+                triageLevel[j] = triageLevel[j + 1];
+                triageLevel[j + 1] = tempTriage;
+
+                // change Age
+                tempAge = age[j];
+                age[j] = age[j + 1];
+                age[j + 1] = tempAge;
+
+                // change Name
+                strcpy(tempName, name[j]);
+                strcpy(name[j], name[j + 1]);
+                strcpy(name[j + 1], tempName); // Fixed: string copy keyword
+            }
+        }
+    }
+
+
+    printf("\n--- PRIORITY LIST (Sorted by Urgency) ---\n");
+    for (int i = 0; i < count; i++) {
+        printf("%d. %s | Age: %d | Priority Level: %d (", i + 1, name[i], age[i], triageLevel[i]);
+
+        if (triageLevel[i] == 3) {
+            printf("Critical");
+        } else if (triageLevel[i] == 2) {
+            printf("Urgent");
+        } else {
+            printf("Normal");
+        }
+
+        printf(")\n");
+    }
+}
