@@ -64,6 +64,8 @@ int main()
                 }
                 break;
         }
+
+
         case 2:
             if (totalPatients == 0) {
                     printf("\n  No patients registered yet!\n");
@@ -71,6 +73,13 @@ int main()
                     sortByPriority(patientName, age, triageLevel, totalPatients);
                 }
                 break;
+
+
+           case 3:
+                generateAnalyticsReport(triageLevel, totalPatients, TotalRevenue, TotalDiscounts);
+                break;
+
+
         case 5:
 
                 printf("\n  Exiting Smart Hospital System. Goodbye!\n");
@@ -220,4 +229,22 @@ void sortByPriority(char name[][50], int age[], int triageLevel[], int count) {
 
         printf(")\n");
     }
+}
+
+void generateAnalyticsReport(int triageLevel[], int totalPatients, double totalRevenue, double totalDiscounts) {
+    int critical = 0, urgent = 0, normal = 0;
+
+    for (int i = 0; i < totalPatients; i++) {
+        if (triageLevel[i] == 3) critical++;
+        else if (triageLevel[i] == 2) urgent++;
+        else if (triageLevel[i] == 1) normal++;
+    }
+
+    printf("\n--- SYSTEM ANALYTICS REPORT ---\n");
+    printf("Total Patients Processed : %d\n", totalPatients);
+    printf("Critical Patients (L3)   : %d\n", critical);
+    printf("Urgent Patients (L2)     : %d\n", urgent);
+    printf("Normal Patients (L1)     : %d\n", normal);
+    printf("Total Revenue Collected  : LKR %.2f\n", totalRevenue);
+    printf("Total Discounts Awarded  : LKR %.2f\n", totalDiscounts);
 }
