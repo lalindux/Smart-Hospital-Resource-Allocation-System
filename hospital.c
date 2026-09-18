@@ -1,0 +1,178 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "hospital.h"
+
+const char SPECIALTY_NAMES[5][30] = {"", "General Practice (OPD)", "Paediatrics", "Cardiology", "Neurology"};
+const double BASE_FEES[]          = {0.0, 1500.00, 2500.00, 4500.00, 5000.00};
+const int AVG_TIME[]              = {0, 15, 20, 30, 30};
+
+const char WARD_NAMES[5][30]      = {"", "General Ward", "Paediatric Ward", "Surgical Ward", "ICU (Intensive Care Unit)"};
+const double WARD_DAILY_RATES[]   = {0.0, 3000.00, 6000.00, 12000.00, 25000.00};
+
+
+int addingPatients(char patientName[][50], int age[], int triageLevel[], int specialtyID[], int isAdmitted[], int wardID[], int daysAdmitted[], int totalPatients ){
+    int idx = totalPatients;
+    char nextChoice;
+    do {
+        printf("\n--- Patient Registration (ID: PAT-%d) ---\n", 1001 + idx);
+        printf("___________________________________________\n");
+        printf("Enter Patient Name: ");
+        scanf(" %[^\n]s", patientName[idx]);
+
+        printf("Enter Patient Age: ");
+        scanf("%d", &age[idx]);
+
+        printf("Enter Triage Level (1 = Normal, 2 = Urgent, 3 = Critical): ");
+        scanf("%d", &triageLevel[idx]);
+
+        printf("Enter Specialty ID (1 = OPD, 2 = Paediatrics, 3 = Cardiology, 4 = Neurology): ");
+        scanf("%d", &specialtyID[idx]);
+
+        printf("Is Admitted to Ward? (1 = Yes, 0 = No): ");
+        scanf("%d", &isAdmitted[idx]);
+
+        if (isAdmitted[idx] == 1) {
+            printf("Enter Ward ID (1 = General, 2 = Paediatric, 3 = Surgical, 4 = ICU): ");
+            scanf("%d", &wardID[idx]);
+            printf("Enter Days Admitted: ");
+            scanf("%d", &daysAdmitted[idx]);
+        } else {
+            wardID[idx] = 0;
+            daysAdmitted[idx] = 0;
+        }
+
+        idx++;
+
+        printf("Add another patient? (Y/N): ");
+        scanf(" %c", &nextChoice);
+
+    } while (nextChoice == 'Y' || nextChoice == 'y');
+
+    return idx;
+}
+void calculateAndPrintBill(char name[], int age, int triageLevel, int specialtyID, int isAdmitted, int wardID, int daysAdmitted, double *gross, double *disc, double *final) {
+
+    double waitTime = AVG_TIME[specialtyID];
+    double baseFee = BASE_FEES[specialtyID];
+    double surcharge = 0.0;
+
+    if (triageLevel == 2) {
+
+        surcharge = baseFee * 0.20;
+
+    } else if (triageLevel == 3) {
+
+        surcharge = baseFee * 0.50;
+    }
+
+    double wardCost = 0.0;
+    if (isAdmitted == 1 && wardID >= 1 && wardID <= 4) {
+
+        wardCost = daysAdmitted * WARD_DAILY_RATES[wardID];
+
+    }
+
+    double SubTotal = baseFee + surcharge + wardCost;
+
+    double discount = 0.0;
+    if (age < 5 || age > 65) {
+        discount = SubTotal * 0.15;
+    }
+
+    double finalBill = SubTotal - discount;
+
+    *gross = SubTotal;
+    *disc = discount;
+    *final = finalBill;
+
+    printf("\n============================================\n");
+    printf("     SMART HOSPITAL ADMISSION & BILL     \n");
+    printf("============================================\n");
+    printf("Patient Name           : %s\n", name);
+    printf("Age                    : %d Years %s\n", age, (age < 5 || age > 65) ? "(15%% Subsidy Eligible)" : "");
+    printf("Specialty              : %s\n", SPECIALTY_NAMES[specialtyID]);
+    printf("Assigned Ward          : %s\n", isAdmitted ? WARD_NAMES[wardID] : "None (Outpatient)");
+    printf("Urgency Level          : Level %d (%s)\n", triageLevel, triageLevel == 3 ? "Critical" : (triageLevel == 2 ? "Urgent" : "Normal"));
+    printf("--------------------------------------------\n");
+    printf("Base Consultation Fee  : LKR %.2f\n", baseFee);
+    printf("Emergency Surcharge    : LKR %.2f\n", surcharge);
+    printf("Ward Stay Cost         : LKR %.2f\n", wardCost);
+    printf("--------------------------------------------\n");
+    printf("Gross Total Bill       : LKR %.2f\n", SubTotal);
+    printf("Age Subsidy Discount   : LKR -%.2f\n", discount);
+    printf("--------------------------------------------\n");
+    printf("Final Payable Amount   : LKR %.2f\n", finalBill);
+    printf("Estimated Waiting Time : %.2f mins\n", waitTime);
+    printf("============================================\n\n\n");
+
+}
+
+void sortByPriority(char name[][50], int age[], int triageLevel[], int count) {
+
+    int tempAge, tempTriage;
+
+
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = 0; j < count - i - 1; j++) {
+            if (triageLevel[j] < triageLevel[j + 1]) {
+
+
+                tempTriage = triageLevel[j];
+                triageLevel[j] = triageLevel[j + 1];
+                triageLevel[j + 1] = tempTriage;
+
+                // change Age
+                tempAge = age[j];
+                age[j] = age[j + 1];
+                age[j + 1] = tempAge;
+
+                // change Name
+                for (int k = 0; k < 50; k++) {
+                char temp = name[j][k];
+                name[j][k] = name[j + 1][k];
+                name[j + 1][k] = temp;
+                if (temp == '\0')
+                    break;
+                }
+            }
+        }
+    }
+
+
+    printf("\n--- PRIORITY LIST (Sorted by Urgency) ---\n");
+    for (int i = 0; i < count; i++) {
+        printf("%d. %s | Age: %d | Priority Level: %d (", i + 1, name[i], age[i], triageLevel[i]);
+
+        if (triageLevel[i] == 3) {
+            printf("Critical");
+        } else if (triageLevel[i] == 2) {
+            printf("Urgent");
+        } else {
+            printf("Normal");
+        }
+
+        printf(")\n");
+    }
+}
+
+void generateAnalyticsReport(int triageLevel[], int totalPatients, double totalRevenue, double totalDiscounts) {
+    int critical = 0, urgent = 0, normal = 0;
+
+    for (int i = 0; i < totalPatients; i++) {
+        if (triageLevel[i] == 3)
+            critical++;
+        else if (triageLevel[i] == 2)
+            urgent++;
+        else if (triageLevel[i] == 1)
+            normal++;
+    }
+
+    printf("\n--- SYSTEM ANALYTICS REPORT ---\n");
+    printf("Total Patients Processed : %d\n", totalPatients);
+    printf("Critical Patients (L3)   : %d\n", critical);
+    printf("Urgent Patients (L2)     : %d\n", urgent);
+    printf("Normal Patients (L1)     : %d\n", normal);
+    printf("Total Revenue Collected  : LKR %.2f\n", totalRevenue);
+    printf("Total Discounts Awarded  : LKR %.2f\n", totalDiscounts);
+}
+
