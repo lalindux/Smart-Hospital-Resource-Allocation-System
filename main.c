@@ -80,7 +80,7 @@ int main()
                 break;
 
 
-        case 5:
+           case 5:
 
                 printf("\n  Exiting Smart Hospital System. Goodbye!\n");
                break;
@@ -99,6 +99,7 @@ int addingPatients(char patientName[][50], int age[], int triageLevel[], int spe
     char nextChoice;
     do {
         printf("\n--- Patient Registration (ID: PAT-%d) ---\n", 1001 + idx);
+        printf("___________________________________________\n");
         printf("Enter Patient Name: ");
         scanf(" %[^\n]s", patientName[idx]);
 
@@ -168,22 +169,25 @@ void calculateAndPrintBill(char name[], int age, int triageLevel, int specialtyI
     *disc = discount;
     *final = finalBill;
 
-    printf("\n=========================================\n");
+    printf("\n============================================\n");
     printf("     SMART HOSPITAL ADMISSION & BILL     \n");
-    printf("=========================================\n");
+    printf("============================================\n");
     printf("Patient Name           : %s\n", name);
     printf("Age                    : %d Years %s\n", age, (age < 5 || age > 65) ? "(15%% Subsidy Eligible)" : "");
     printf("Specialty              : %s\n", SPECIALTY_NAMES[specialtyID]);
     printf("Assigned Ward          : %s\n", isAdmitted ? WARD_NAMES[wardID] : "None (Outpatient)");
     printf("Urgency Level          : Level %d (%s)\n", triageLevel, triageLevel == 3 ? "Critical" : (triageLevel == 2 ? "Urgent" : "Normal"));
+    printf("--------------------------------------------\n");
     printf("Base Consultation Fee  : LKR %.2f\n", baseFee);
     printf("Emergency Surcharge    : LKR %.2f\n", surcharge);
     printf("Ward Stay Cost         : LKR %.2f\n", wardCost);
+    printf("--------------------------------------------\n");
     printf("Gross Total Bill       : LKR %.2f\n", SubTotal);
     printf("Age Subsidy Discount   : LKR -%.2f\n", discount);
+    printf("--------------------------------------------\n");
     printf("Final Payable Amount   : LKR %.2f\n", finalBill);
     printf("Estimated Waiting Time : %.2f mins\n", waitTime);
-    printf("=========================================\n");
+    printf("============================================\n\n\n");
 
 }
 
@@ -207,9 +211,13 @@ void sortByPriority(char name[][50], int age[], int triageLevel[], int count) {
                 age[j + 1] = tempAge;
 
                 // change Name
-                strcpy(tempName, name[j]);
-                strcpy(name[j], name[j + 1]);
-                strcpy(name[j + 1], tempName); // Fixed: string copy keyword
+                for (int k = 0; k < 50; k++) {
+                char temp = name[j][k];
+                name[j][k] = name[j + 1][k];
+                name[j + 1][k] = temp;
+                if (temp == '\0')
+                    break;
+                }
             }
         }
     }
@@ -235,9 +243,12 @@ void generateAnalyticsReport(int triageLevel[], int totalPatients, double totalR
     int critical = 0, urgent = 0, normal = 0;
 
     for (int i = 0; i < totalPatients; i++) {
-        if (triageLevel[i] == 3) critical++;
-        else if (triageLevel[i] == 2) urgent++;
-        else if (triageLevel[i] == 1) normal++;
+        if (triageLevel[i] == 3)
+            critical++;
+        else if (triageLevel[i] == 2)
+            urgent++;
+        else if (triageLevel[i] == 1)
+            normal++;
     }
 
     printf("\n--- SYSTEM ANALYTICS REPORT ---\n");
@@ -248,3 +259,9 @@ void generateAnalyticsReport(int triageLevel[], int totalPatients, double totalR
     printf("Total Revenue Collected  : LKR %.2f\n", totalRevenue);
     printf("Total Discounts Awarded  : LKR %.2f\n", totalDiscounts);
 }
+
+
+
+
+
+
