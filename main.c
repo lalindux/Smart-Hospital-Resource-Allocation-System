@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include "hospital.h"
 
 #define PATIENTS 1000
 #define SPECIALTIES 4
@@ -71,7 +71,7 @@ int main()
 
 
            case 3:
-                generateAnalyticsReport(triageLevel, totalPatients, TotalRevenue, TotalDiscounts);
+                generateAnalyticsReport(triageLevel,wardID, isAdmitted, patientName, finalAmounts, totalPatients, TotalRevenue, TotalDiscounts);
                 break;
 
 
