@@ -17,12 +17,12 @@
 * <code>main.c</code> : Handles the main menu interface, user inputs, and function calls.
 * <code>hospital.c</code> : Contains the core logic and implementations for all hospital functions.
 * <code>hospital.h</code> : Defines system constants, global array declarations, and function prototypes.
-* <code>HospitalSystem.cbp</code> : Code::Blocks project file for easy workspace loading.
+* <code>Smart Hospital.cbp</code> : Code::Blocks project file for easy workspace loading.
 
 ---
 
 ### 🚀 How to Run using Code::Blocks
 1. Download or clone this project repository to your computer.
-2. Locate and double-click the <b>"HospitalSystem.cbp"</b> file inside the project folder.
+2. Locate and double-click the <b>"Smart Hospital.cbp"</b> file inside the project folder.
 3. Code::Blocks IDE will open automatically with all workspace files pre-loaded.
 4. Click <b>"Build and Run"</b> (or press <code>F9</code>) inside Code::Blocks to execute the program.
