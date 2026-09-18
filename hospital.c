@@ -155,7 +155,7 @@ void sortByPriority(char name[][50], int age[], int triageLevel[], int count) {
     }
 }
 
-void generateAnalyticsReport(int triageLevel[], int totalPatients, double totalRevenue, double totalDiscounts) {
+void generateAnalyticsReport(int triageLevel[],int wardID[],int isAdmitted[],char patientName[][50],double finalAmounts[], int totalPatients, double totalRevenue, double totalDiscounts) {
     int critical = 0, urgent = 0, normal = 0;
 
     for (int i = 0; i < totalPatients; i++) {
@@ -166,6 +166,21 @@ void generateAnalyticsReport(int triageLevel[], int totalPatients, double totalR
         else if (triageLevel[i] == 1)
             normal++;
     }
+            int wardCounts[5] = {0, 0, 0, 0, 0};
+            for (int i = 0; i < totalPatients; i++) {
+        if (wardID[i] >= 1 && wardID[i] <= 4) {
+            wardCounts[wardID[i]]++;
+        }
+      }
+            double maxBill = finalAmounts[0];
+            int highestPayingIndex = 0;
+
+            for (int i = 1; i < totalPatients; i++) {
+        if (finalAmounts[i] > maxBill) {
+            maxBill = finalAmounts[i];
+            highestPayingIndex = i;
+        }
+      }
 
     printf("\n--- SYSTEM ANALYTICS REPORT ---\n");
     printf("Total Patients Processed : %d\n", totalPatients);
@@ -174,5 +189,24 @@ void generateAnalyticsReport(int triageLevel[], int totalPatients, double totalR
     printf("Normal Patients (L1)     : %d\n", normal);
     printf("Total Revenue Collected  : LKR %.2f\n", totalRevenue);
     printf("Total Discounts Awarded  : LKR %.2f\n", totalDiscounts);
+
+    printf("\n ... WARD BED OCCUPANCY...\n ");
+    for (int w = 1; w <= 4; w++) {
+        double pct = 0.0;
+        if (totalPatients > 0) {
+            pct = ((double)wardCounts[w] / totalPatients) * 100.0;
+        }
+        printf("%s: %d (%.1f%%)\n", WARD_NAMES[w], wardCounts[w], pct);
+    }
+
+    printf("\n--- HIGHEST PAYING PATIENT ---\n");
+    if (totalPatients > 0) {
+        printf("Name : %s\n", patientName[highestPayingIndex]);
+        printf("Bill : LKR %.2f\n", finalAmounts[highestPayingIndex]);
+    } else {
+        printf("No records available.\n");
+    }
+
+
 }
 
