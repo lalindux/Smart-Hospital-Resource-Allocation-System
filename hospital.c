@@ -34,8 +34,29 @@ int addingPatients(char patientName[][50], int age[], int triageLevel[], int spe
         if (isAdmitted[idx] == 1) {
             printf("Enter Ward ID (1 = General, 2 = Paediatric, 3 = Surgical, 4 = ICU): ");
             scanf("%d", &wardID[idx]);
+
+            int currentCount = 0;
+            for (int k = 0; k < idx; k++) {
+                if (isAdmitted[k] == 1 && wardID[k] == wardID[idx]) {
+                    currentCount++;
+                }
+            }
+
+            if (currentCount >= 20) {
+                printf("\n [WARNING] Selected Ward is FULLY OCCUPIED! (Max 20 Beds Limit Reached)\n");
+
+                printf(" Patient registered as Outpatient (Not Admitted).\n");
+
+                isAdmitted[idx] = 0;
+                wardID[idx] = 0;
+                daysAdmitted[idx] = 0;
+
+            }else {
+
             printf("Enter Days Admitted: ");
             scanf("%d", &daysAdmitted[idx]);
+
+        }
         } else {
             wardID[idx] = 0;
             daysAdmitted[idx] = 0;
@@ -188,7 +209,7 @@ void generateAnalyticsReport(int triageLevel[],int wardID[],int isAdmitted[],cha
     printf("Urgent Patients (L2)     : %d\n", urgent);
     printf("Normal Patients (L1)     : %d\n", normal);
     printf("Total Revenue Collected  : LKR %.2f\n", totalRevenue);
-    printf("Total Discounts Awarded  : LKR %.2f\n", totalDiscounts);
+    printf("Total Discounts Awarded  : LKR %.2f\n\n\n", totalDiscounts);
 
     printf("\n ... WARD BED OCCUPANCY...\n ");
     for (int w = 1; w <= 4; w++) {
@@ -196,7 +217,7 @@ void generateAnalyticsReport(int triageLevel[],int wardID[],int isAdmitted[],cha
         if (totalPatients > 0) {
             pct = ((double)wardCounts[w] / totalPatients) * 100.0;
         }
-        printf("%s: %d (%.1f%%)\n", WARD_NAMES[w], wardCounts[w], pct);
+        printf("%s: %d (%.1f%%)\n\n\n", WARD_NAMES[w], wardCounts[w], pct);
     }
 
     printf("\n--- HIGHEST PAYING PATIENT ---\n");
