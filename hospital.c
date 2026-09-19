@@ -20,7 +20,7 @@ int addingPatients(char patientName[][50], int age[], int triageLevel[], int spe
         scanf(" %[^\n]s", patientName[idx]);
 
         printf("Enter Patient Age: ");
-        scanf("%d", &age[idx]);
+        scanf(" %d", &age[idx]);
 
         printf("Enter Triage Level (1 = Normal, 2 = Urgent, 3 = Critical): ");
         scanf("%d", &triageLevel[idx]);
@@ -229,5 +229,39 @@ void generateAnalyticsReport(int triageLevel[],int wardID[],int isAdmitted[],cha
     }
 
 
+}
+void saveBedStatus(int wardCounts[]) {
+    FILE *file = fopen("beds_status.txt", "w");
+    if (file != NULL) {
+        fprintf(file, "=== SMART HOSPITAL BED OCCUPANCY STATUS ===\n");
+        for (int i = 1; i <= 4; i++) {
+            fprintf(file, "%-25s : %d Patients\n", WARD_NAMES[i], wardCounts[i]);
+        }
+        fclose(file);
+    }
+}
+
+void loadBedStatus(int wardCounts[]) {
+    FILE *file = fopen("beds_status.txt", "r");
+    if (file != NULL) {
+        char buffer[100];
+
+        fgets(buffer, sizeof(buffer), file);
+
+        for (int i = 1; i <= 4; i++) {
+
+            char wardName[50];
+            fscanf(file, " %[^:]s : %d Patients\n", wardName, &wardCounts[i]);
+        }
+        fclose(file);
+    }
+}
+
+void savePatientRecord(char name[], int age, int wardID, double finalBill) {
+    FILE *file = fopen("patient_records.txt", "a");
+    if (file != NULL) {
+        fprintf(file, "Name: %s | Age: %d | Ward: %d | Bill: LKR %.2f\n", name, age, wardID, finalBill);
+        fclose(file);
+    }
 }
 

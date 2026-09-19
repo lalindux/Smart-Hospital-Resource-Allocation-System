@@ -23,6 +23,9 @@ int main()
     int totalPatients = 0;
     double TotalRevenue = 0.0;
     double TotalDiscounts = 0.0;
+    int wardCounts[5] = {0, 0, 0, 0, 0};
+
+    loadBedStatus(wardCounts);
 
     int choice;
     do {
@@ -56,6 +59,12 @@ int main()
                     TotalRevenue += finalAmt;
                     TotalDiscounts += disc;
                     finalAmounts[i] = finalAmt;
+
+                    if (isAdmitted[i] == 1 && wardID[i] >= 1 && wardID[i] <= 4) {
+                    wardCounts[wardID[i]]++;
+                }
+
+                savePatientRecord(patientName[i], age[i], wardID[i], finalAmt);
                 }
                 break;
         }
@@ -74,11 +83,20 @@ int main()
                 generateAnalyticsReport(triageLevel,wardID, isAdmitted, patientName, finalAmounts, totalPatients, TotalRevenue, TotalDiscounts);
                 break;
 
+           case 4:
+            saveBedStatus(wardCounts);
+
+            printf("\n  Exiting Smart Hospital System. All data saved safely. Goodbye!\n");
+
+           break;
+
 
            case 5:
+                saveBedStatus(wardCounts);
 
-                printf("\n  Exiting Smart Hospital System. Goodbye!\n");
+                printf("\n  Exiting Smart Hospital System. All data saved safely. Goodbye!\n");
                break;
+
             default:
                 printf("\n  Invalid choice! Please select an option between 1 and 5.\n");
          }
