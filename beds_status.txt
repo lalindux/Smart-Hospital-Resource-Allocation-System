@@ -1,0 +1,5 @@
+=== SMART HOSPITAL BED OCCUPANCY STATUS ===
+General Ward              : 1 Patients
+Paediatric Ward           : 0 Patients
+Surgical Ward             : 0 Patients
+ICU (Intensive Care Unit) : 0 Patients

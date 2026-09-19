@@ -19,6 +19,9 @@ void calculateAndPrintBill(char name[], int age, int triageLevel, int specialtyI
 void sortByPriority(char name[][50], int age[], int triageLevel[], int count);
 void generateAnalyticsReport(int triageLevel[],int wardID[],int isAdmitted[],char patientName[][50],double finalAmounts[], int totalPatients, double totalRevenue, double totalDiscounts);
 
+void saveBedStatus(int wardCounts[]);
+void loadBedStatus(int wardCounts[]);
+void savePatientRecord(char name[], int age, int wardID, double finalBill);
 
 
 #endif // HOSPITAL_H_INCLUDED
